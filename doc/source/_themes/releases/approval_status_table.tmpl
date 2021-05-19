@@ -1,0 +1,39 @@
+.. -*- mode: rst -*-
+
+.. This template renders a table showing issues faced during each series and
+   their related validation status. Validation allowed or not.
+
+{% set vars = {'operational': True} %}
+{%- for c in data['issues'] %}
+    {%- if c['status'] != 'solved' %}
+        {% if vars.update({'operational': False}) %}{% endif %} 
+    {%- endif %}
+{%- endfor %}
+{%- if vars.operational %}
+**Status: Operational**
+{%- else %}
+**Status: Problem occur see the list bellow**
+{%- endif %}
+
+{%- if data is not none %}
+.. list-table::
+   :header-rows: 1
+   :widths: 15 10 30 30
+
+   - * Date
+     * Status
+     * Description
+     * Updates
+{%- for c in data['issues'] %}
+   - * {{format_date(c['start'])}} - {%- if c['end'] is defined and c['end'] != '?' %}{{format_date(c['end'])}} {%- else %} ? {%- endif %}
+     * {{c['status']}}
+     * {{c['description']}}
+{%- if not c['updates'] %}
+     * 
+{%- else -%}
+{%- for e in c['updates'] %}
+     {% if loop.first %}*{% else %} {% endif %} + {{e}}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif %}

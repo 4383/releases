@@ -267,25 +267,71 @@ Indeed, sometimes job failures are systemic and should be fixed
 first to avoid repeated failures wich could lead inconsistent states in our
 coordinated releases.
 
-To answer that case we defined three statuses to indicate if we should/shouldn't
-continue to validate patch:
+To answer that case, failures and their statuses are minotored to indicate if
+we should or shouldn't continue to validate patch.
 
-- ``RED``: no more approvals;
-- ``ORANGE``: a transient status where we think that the issue is solved but
+`Review Approval Status Web Page
+<https://releases.openstack.org/approval_status.html>`_
+
+Status is either ``Operational`` when everything is ok or in error when one
+or more problem occur.
+
+We keep an history of all the experienced issues. Those not yet resolved can
+be identified by their status.
+
+Allowed status are:
+
+- ``investigating``: no more approvals, we looks for the root cause;
+- ``identified``: the root cause have been identified but we still hold our
+  approval;
+- ``verification``: a transient status where we think that the issue is solved but
   approvals must be carefully monitored first;
-- ``GREEN``: the issue have been fixed and everything works as expected.
+- ``solved``: the issue have been fixed and everything works as expected.
   (approvals are reopen).
 
 To inform all the release managers that something went wrong and ask them to
 hold approvals then follow the following process:
 
-1. open a new thread on the ML with for topic ``[release] Status: RED - $subject``
-   to indicate the issue
-2. notify directly the release managers on IRC (``#openstack-release``)
+1. notify directly the release managers on IRC (``#openstack-release``)
+2. add a new entry to our monitoring web page to indicate the details related
+   to newly identified issue (``doc/source/approval_status.yaml``), example::
+
+      issues:
+        - start: 2021-05-12
+          description: 'Sample issue'
+          status: investigating
+
+   .. note::
+
+     For these patches, reviews aren't mandatory and the author
+     can merge them directly to update the monitoring. Keep this
+     monitoring up-to-date is one of the PTL's duties.
 
 When you think that the problem is solved but that it still need some tests
-you just have to reply on the thread by moving the topic from ``RED``
-to ``ORANGE``.
+you just have to update the status of monitored entry previously added.
 
-When everything seems under control then you can reply on the thread by moving
-the topic from ``ORANGE`` to ``GREEN``.
+You can also add updates during your investigations to share more details::
+
+      issues:
+        - start: 2021-05-12
+          description: 'Sample issue'
+          status: investigating
+          updates:
+          - 'We think that we identified the root cause'
+          - 'We started investigations and we are looking for the root cause'
+
+When everything seems under control then you can add an ending date (example
+``end: 2021-05-12``) and move its status to ``solved``:
+
+      issues:
+        - start: 2021-05-12
+          end: 2021-05-12
+          description: 'Sample issue'
+          status: solved
+          updates:
+          - 'Patch submitted'
+          - 'We think that we identified the root cause'
+          - 'We started investigations and we are looking for the root cause'
+
+Reviewers only need to have a look to this page during their reviews to ensure
+that approvals doesn't need to be held.

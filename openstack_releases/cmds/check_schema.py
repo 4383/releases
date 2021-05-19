@@ -44,6 +44,10 @@ _LIAISONS_SCHEMA = yamlutils.loads(
                      'liaisons_schema.yaml').decode('utf-8')
 )
 
+_APPROVAL_STATUS_SCHEMA = yamlutils.loads(
+    pkgutil.get_data('openstack_releases',
+                     'approval_status_schema.yaml').decode('utf-8')
+)
 
 def is_date(validator, value, instance, schema):
     if not isinstance(instance, str):
@@ -108,6 +112,11 @@ def main():
         errors.extend(
             validate_one_file('data/release_liaisons.yaml',
                               _LIAISONS_SCHEMA, args.debug)
+        )
+
+        errors.extend(
+            validate_one_file('doc/source/approval_status.yaml',
+                              _APPROVAL_STATUS_SCHEMA, args.debug)
         )
 
     filenames = args.input or sorted(glob.glob('deliverables/*/*.yaml'))

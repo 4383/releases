@@ -176,5 +176,6 @@ documentation:
    reference/deliverable_types
    reference/reviewer_guide
    reference/process
+   approval_status
 
 .. _`openstack/releases`: https://opendev.org/openstack/releases

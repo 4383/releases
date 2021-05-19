@@ -1,0 +1,38 @@
+# status:
+# - investigating: New issue under investigation 
+# - identified: The problem has been identified 
+# - verified: The problem has been identified 
+# - solved: The problem is solved 
+---
+$schema: "http://json-schema.org/schema#"
+$id: "https://opendev.org/openstack/releases/src/branch/master/README.rst"
+
+# Do not allow any properties not defined here. This lets us catch
+# typos.
+properties:
+  issues:
+    type: "array"
+    items:
+      type: "object"
+      required:
+        - start
+        - status
+        - description
+      properties:
+        start:
+          type: "date"
+        end:
+          type: "date"
+        status:
+          type: "string"
+          enum:
+            - investigating
+            - identified
+            - verification
+            - solved
+        description:
+          type: "string"
+        updates:
+          type: "array"
+          items:
+            type: "string"
